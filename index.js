@@ -1,9 +1,17 @@
 const express = require('express');
 const app = express();
 const port = 3000;
+const config = require('./config/key');
 
 const mongoose = require('mongoose');
-mongoose.connect('mongodb+srv://lokises:xkfhvls4@boilerplate.evtgp.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
+const bodyParser = require('body-parser');
+
+const {User} = require('./models/user');
+
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
+
+mongoose.connect(config.mongoURL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
@@ -16,4 +24,19 @@ mongoose.connect('mongodb+srv://lokises:xkfhvls4@boilerplate.evtgp.mongodb.net/m
 
 app.get('/', (req, res) => res.send('here we are'));
 
-app.listen(port, () => {console.log(`app start ${port}`)});
+app.post('/register', (req, res) => {
+
+    const user = new User(req.body);
+    user.save((err, userInfo) => {
+        if(err) {
+            return res.json({success: false, err});
+        }
+        else {
+            return res.status(200).json({
+                success: true
+            });
+        }
+    });
+});
+
+app.listen(port, () => {console.log(`app start ${port}`)});90
