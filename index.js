@@ -4,12 +4,10 @@ const port = 3000;
 const config = require('./config/key');
 
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-
 const {User} = require('./models/user');
 
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.json());
+//app.use(bodyParser().urlencoded({extended: true}));
+//app.use(bodyParser().json());
 
 mongoose.connect(config.mongoURL, {
     useNewUrlParser: true,
@@ -21,6 +19,8 @@ mongoose.connect(config.mongoURL, {
 }).catch(err => {
     console.log(err);
 });
+
+app.use(express.json());
 
 app.get('/', (req, res) => res.send('here we are'));
 
