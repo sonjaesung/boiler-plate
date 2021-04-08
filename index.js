@@ -39,4 +39,28 @@ app.post('/register', (req, res) => {
     });
 });
 
+app.post('/login', (req, res) => {
+    User.findOne({
+        email: req.body.email
+    }, (err, userInfo) => {
+       if(!userInfo)
+       {
+           return res.json({
+               loginSuccess: false,
+               message: "일치하는 회원 정보가 없습니다."
+           });
+       } 
+
+       userInfo.comparePassword(req.body.password, (err, isMath) => {
+            if(!isMath) {
+                return res.json({ loginSuccess: false, message: "비밀번호가 틀렸습니다." });
+            }
+
+            userInfo.generateToken((err, user) => {
+
+            });
+       });
+    });
+});
+
 app.listen(port, () => {console.log(`app start ${port}`)});90
